@@ -4,6 +4,7 @@ from PySide.QtGui import QDesktopWidget
 from PySide.QtCore import *
 from gui.ui_mainwindow import Ui_MainWindow
 from gui.ui_projector import Ui_Form
+from sys import stderr
 
 class Slide(object):
     def __init__(self, title, content):
@@ -38,6 +39,10 @@ if __name__ == '__main__':
     windows[0].show()
     #windows[1].showFullScreen()
     #windows[1].show()
-    print QDesktopWidget.screenCount()
 
-    sys.exit(app.exec_())
+    desktop = QDesktopWidget()
+    if desktop.screenCount() < 2:
+        stderr.write('Need at least two screens connected.')
+        sys.exit()
+    else:
+        sys.exit(app.exec_())
