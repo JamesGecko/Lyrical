@@ -34,5 +34,5 @@ Was blind but now I see"""
         self.title = 'Amazing Grace'
         self.copyright = ''
 
-
-
+    def lyrics_list(self):
+        return self.lyrics.split('\n\n')
