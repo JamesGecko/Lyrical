@@ -3,7 +3,7 @@ from PySide.QtGui import QApplication, QMainWindow, QWidget
 from PySide.QtGui import QDesktopWidget
 from PySide.QtCore import *
 from gui.ui_mainwindow import Ui_MainWindow
-from gui.ui_projector import Ui_Form
+from gui.ui_projector import Ui_Projector
 from sys import stderr
 
 class Slide(object):
