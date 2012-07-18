@@ -1,10 +1,11 @@
 import sys
+import os, errno
 from PySide.QtGui import QApplication, QMainWindow, QWidget
 from PySide.QtGui import QDesktopWidget
 from PySide.QtCore import *
 from gui.ui_mainwindow import Ui_MainWindow
 from gui.ui_projector import Ui_Projector
-from model import Song
+from model import Database, Song
 from sys import stderr
 
 class Slide(object):
@@ -40,6 +41,14 @@ if __name__ == '__main__':
     windows[0].show()
     #windows[1].showFullScreen()
     #windows[1].show()
+
+    data_directory = os.path.expanduser('~/.lyrical')
+    try:
+        os.makedirs(data_directory)
+    except OSError, e:
+        if e.errno != errno.EEXIST:
+            raise
+    db = Database(data_directory + '/songs.sqlite')
 
     song = Song()
     windows[0].lyrics.insertItems(0, song.lyrics_list())

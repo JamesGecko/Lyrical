@@ -1,3 +1,5 @@
+import sqlite3
+
 class Song(object):
     def __init__(self):
         self.lyrics = """Amazing Grace, how sweet the sound,
@@ -36,3 +38,36 @@ Was blind but now I see"""
 
     def lyrics_list(self):
         return self.lyrics.split('\n\n')
+
+class Database(object):
+    def __init__(self, db_path):
+        self.conn = sqlite3.connect(db_path)
+        self.c = self.conn.cursor()
+
+    def generate_new(self):
+        self.c.execute('''CREATE TABLE songs (
+            id INTEGER PRIMARY KEY,
+            title STRING,
+            lyrics STRING,
+            copyright STRING)''')
+
+    def add_song(self, song):
+        try:
+            self.c.execute('''INSERT INTO songs (title, lyrics, copyright)
+                VALUES (?, ?, ?)''', (song.title, song.lyrics, song.copyright))
+            self.c.commit()
+            return self.c.lastrowid
+        except:
+            return False
+
+    def update_song(self, song):
+        try:
+            self.c.execute('''UPDATE songs SET title=?, lyrics=?, copyright=?
+                WHERE id=?''', (song.title, song.lyrics, song.copyright, song.id))
+            self.c.commit()
+            return True
+        except:
+            return False
+
+    def __del__(self):
+        self.c.close()
