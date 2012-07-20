@@ -45,16 +45,17 @@ class Database(object):
         self.c = self.conn.cursor()
 
     def generate_new(self):
-        self.c.execute('''CREATE TABLE songs (
-            id INTEGER PRIMARY KEY,
-            title STRING,
-            lyrics STRING,
-            copyright STRING)''')
+        self.c.execute('CREATE TABLE songs ( '
+                       'id INTEGER PRIMARY KEY, '
+                       'title STRING, '
+                       'lyrics STRING, '
+                       'copyright STRING)')
 
     def add_song(self, song):
         try:
-            self.c.execute('''INSERT INTO songs (title, lyrics, copyright)
-                VALUES (?, ?, ?)''', (song.title, song.lyrics, song.copyright))
+            self.c.execute('INSERT INTO songs (title, lyrics, copyright) '
+                           'VALUES (?, ?, ?)',
+                           (song.title, song.lyrics, song.copyright))
             self.c.commit()
             return self.c.lastrowid
         except:
@@ -62,12 +63,22 @@ class Database(object):
 
     def update_song(self, song):
         try:
-            self.c.execute('''UPDATE songs SET title=?, lyrics=?, copyright=?
-                WHERE id=?''', (song.title, song.lyrics, song.copyright, song.id))
+            self.c.execute('UPDATE songs SET title=?, lyrics=?, copyright=? '
+                           'WHERE id=?',
+                           (song.title, song.lyrics, song.copyright, song.id))
             self.c.commit()
             return True
         except:
             return False
+
+    def find_song(self, query):
+        self.c.execute("SELECT * FROM song WHERE title LIKE '?' "
+                       "OR lyrics LIKE '?'", query)
+        return self.c.fetchall()
+
+    def find_all_songs(self):
+        self.c.execute("SELECT * FROM song")
+        return self.c.fetchall()
 
     def __del__(self):
         self.c.close()
