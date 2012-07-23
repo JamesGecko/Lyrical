@@ -38,6 +38,7 @@ class LyricalControl(QMainWindow, Ui_MainWindow):
         content = self.lyrics.currentItem().text()
         self.projector.update(Slide(title, content))
 
+
 def get_database():
     data_directory = os.path.expanduser('~/.lyrical')
     try:
@@ -60,7 +61,9 @@ if __name__ == '__main__':
 
     song = Song()
     controller.lyrics.insertItems(0, song.lyrics_list())
+    controller.lyrics.setCurrentRow(0)
     controller.song_list.addItem(song.title)
+    controller.song_list.setCurrentRow(0)
 
     desktop = QDesktopWidget()
     if desktop.screenCount() < 2:
