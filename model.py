@@ -1,7 +1,7 @@
 import sqlite3
 
 class Song(object):
-    def __init__(self):
+    def __init__(self, title=None, lyrics=None, copyright=None):
         self.lyrics = """Amazing Grace, how sweet the sound,
 That saved a wretch like me
 I once was lost but now am found,
@@ -39,6 +39,12 @@ Was blind but now I see"""
     def lyrics_list(self):
         return self.lyrics.split('\n\n')
 
+    def validate(self):
+        if self.title == '':
+            return 'Title cannot be blank'
+        if self.lyrics == '':
+            return 'Lyrics cannot be empty'
+
 class Database(object):
     def __init__(self, db_path):
         self.conn = sqlite3.connect(db_path)
@@ -71,6 +77,12 @@ class Database(object):
         except:
             return False
 
+    def push_song(self, song):
+        if song.id:
+            update_song(song)
+        else:
+            add_song(song)
+
     def find_song(self, query):
         self.c.execute("SELECT * FROM song WHERE title LIKE '?' "
                        "OR lyrics LIKE '?'", query)
@@ -79,6 +91,10 @@ class Database(object):
     def find_all_songs(self):
         self.c.execute("SELECT * FROM song")
         return self.c.fetchall()
+
+    def get_song(self, id):
+        self.c.execute("SELECT TOP 1 * FROM song where id = ?", id)
+        return Song(
 
     def __del__(self):
         self.c.close()

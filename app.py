@@ -38,6 +38,64 @@ class LyricalControl(QMainWindow, Ui_MainWindow):
         content = self.lyrics.currentItem().text()
         self.projector.update(Slide(title, content))
 
+class LyricalPicker(QMainWindow, Ui_Picker):
+    def __init__(self, db):
+        QMainWindow.__init__(self)
+        self.db = db
+        self.setupUi(self)
+
+        self.song_list.clicked.connect(self.click_song)
+        self.song_list.double_click.connect(self.add_song)
+        self.add_button.clicked.connect(self.add_song)
+        self.edit_button.clicked.connect(self.edit_song)
+        self.cancel_button.clicked.connect(self.close_window)
+
+    @QtCore.Slot()
+    def click_song(self):
+        pass
+        #show song in self.lyrics
+
+    #trigger on add button click or double click on item in self.song_list
+    @QtCore.Slot()
+    def add_song(self):
+        pass
+        #give LyricalControl the song id
+
+    @QtCore.Slot()
+    def edit_song(self):
+        pass
+        #give LyricalEdit the song id
+
+    @QtCore.Slot()
+    def close_window(self):
+        pass
+
+class LyricalEditor(QMainWindow, Ui_Editor):
+    def __init__(self, db, song=None):
+        QMainWindow.__init__(self)
+        self.setupUi(self)
+
+        self.db = db
+        if not song:
+            song = Song('','')
+
+    @QtCore.Slot()
+    def close_window(self):
+        pass
+
+    @QtCore.Slot()
+    def save_edits(self):
+        self.song.title = self.title
+        self.song.lyrics = self.lyrics
+
+        validation = self.song.validate
+
+        if validation:
+            self.db.push_song(song)
+            self.close_window()
+        else:
+            pass # show error dialog
+
 
 def get_database():
     data_directory = os.path.expanduser('~/.lyrical')
@@ -52,10 +110,12 @@ def get_database():
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
+    editor = LyricalEditor()
     projector = LyricalProjector()
     controller = LyricalControl(projector)
     controller.show()
     projector.show()
+    editor.show()
 
     db = get_database()
 
