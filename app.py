@@ -5,6 +5,8 @@ from PySide.QtGui import QDesktopWidget
 from PySide import QtCore
 from gui.ui_mainwindow import Ui_MainWindow
 from gui.ui_projector import Ui_Projector
+from gui.ui_editor import Ui_Editor
+from gui.ui_picker import Ui_Picker
 from model import Database, Song
 from sys import stderr
 
@@ -110,14 +112,14 @@ def get_database():
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    editor = LyricalEditor()
     projector = LyricalProjector()
     controller = LyricalControl(projector)
     controller.show()
     projector.show()
-    editor.show()
 
     db = get_database()
+    editor = LyricalEditor(db)
+    editor.show()
 
     song = Song()
     controller.lyrics.insertItems(0, song.lyrics_list())
