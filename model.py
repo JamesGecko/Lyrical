@@ -79,9 +79,9 @@ class Database(object):
 
     def push_song(self, song):
         if song.id:
-            update_song(song)
+            self.update_song(song)
         else:
-            add_song(song)
+            self.add_song(song)
 
     def find_song(self, query):
         self.c.execute("SELECT * FROM song WHERE title LIKE '?' "
@@ -93,8 +93,9 @@ class Database(object):
         return self.c.fetchall()
 
     def get_song(self, id):
-        self.c.execute("SELECT TOP 1 * FROM song where id = ?", id)
-        return Song(
+        self.c.execute("SELECT TOP 1 title, lyrics, copyright"
+                       "FROM song where id = ?", id)
+        return Song(*self.c.fetchone())
 
     def __del__(self):
         self.c.close()
