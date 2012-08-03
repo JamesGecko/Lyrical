@@ -13,12 +13,25 @@ from sys import stderr
 class Slide(object):
     def __init__(self, title, content):
         self.title = title
-        self.content = content
+        self.content = self.convert_line_breaks(content)
+
+    def convert_line_breaks(self, text):
+        return text.replace('\n', '<br>')
+
 
 class LyricalProjector(QWidget, Ui_Projector):
     def __init__(self):
         QWidget.__init__(self)
         self.setupUi(self)
+        self.style = '''
+        color: white;
+        background-color: black;
+        padding-top: 20px;
+        padding-left: 20px;
+        font-size: 40px;
+        text-align: center;
+        ''' #TODO: text-align doesn't work with QTextBrowser widgets
+        self.content.setStyleSheet(self.style)
 
     def update(self, slide):
         '''set title and content to slide
@@ -26,13 +39,27 @@ class LyricalProjector(QWidget, Ui_Projector):
         self.title.setText(slide.title)
         self.content.setText(slide.content)
 
+
 class LyricalControl(QMainWindow, Ui_MainWindow):
     def __init__(self, projector_window):
         QMainWindow.__init__(self)
         self.projector = projector_window
         self.setupUi(self)
+        self.songs = []
 
         self.lyrics.clicked.connect(self.update_screen)
+
+    def add_song(self, song):
+        self.songs.append(song)
+        controller.song_list.addItem(song.title)
+
+    def remove_song(self):
+        #controller.song_list.removeCurrentRow(0)
+        pass
+
+    def edit_song(self):
+        #controller.song_list.getCurrentRow()
+        pass
 
     @QtCore.Slot()
     def update_screen(self):
@@ -40,10 +67,16 @@ class LyricalControl(QMainWindow, Ui_MainWindow):
         content = self.lyrics.currentItem().text()
         self.projector.update(Slide(title, content))
 
+    @QtCore.Slot()
+    def launch_picker(self):
+        db = get_database() #TODO: is multiple sqlite db handles the best way?
+        picker = LyricalPicker(db, self)
+
 class LyricalPicker(QMainWindow, Ui_Picker):
-    def __init__(self, db):
+    def __init__(self, db, controller):
         QMainWindow.__init__(self)
         self.db = db
+        self.controller = controller
         self.setupUi(self)
 
         self.song_list.clicked.connect(self.click_song)
@@ -54,23 +87,26 @@ class LyricalPicker(QMainWindow, Ui_Picker):
 
     @QtCore.Slot()
     def click_song(self):
+        '''Show song in self.lyrics
+        '''
         pass
-        #show song in self.lyrics
 
-    #trigger on add button click or double click on item in self.song_list
     @QtCore.Slot()
     def add_song(self):
-        pass
-        #give LyricalControl the song id
+        '''Give LyricalControl the song id
+        '''
+        self.controller.add_song(self.song_list.currentItem())
 
     @QtCore.Slot()
     def edit_song(self):
+        '''Give LyricalEdit the song id
+        '''
         pass
-        #give LyricalEdit the song id
 
     @QtCore.Slot()
     def close_window(self):
-        pass
+        self.close()
+
 
 class LyricalEditor(QMainWindow, Ui_Editor):
     def __init__(self, db, song=None):
@@ -109,17 +145,16 @@ def get_database():
     db = Database(data_directory + '/songs.sqlite')
     return db
 
-
-if __name__ == '__main__':
+def main():
     app = QApplication(sys.argv)
     projector = LyricalProjector()
     controller = LyricalControl(projector)
     controller.show()
     projector.show()
 
-    db = get_database()
-    editor = LyricalEditor(db)
-    editor.show()
+    #db = get_database()
+    #editor = LyricalEditor(db)
+    #editor.show()
 
     song = Song()
     controller.lyrics.insertItems(0, song.lyrics_list())
@@ -133,3 +168,6 @@ if __name__ == '__main__':
         sys.exit()
     else:
         sys.exit(app.exec_())
+
+if __name__ == '__main__':
+    main()
