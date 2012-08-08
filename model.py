@@ -83,14 +83,17 @@ class Database(object):
         else:
             self.add_song(song)
 
-    def find_song(self, query):
-        self.c.execute("SELECT * FROM song WHERE title LIKE '?' "
-                       "OR lyrics LIKE '?'", query)
-        return self.c.fetchall()
-
-    def find_all_songs(self):
-        self.c.execute("SELECT * FROM song")
-        return self.c.fetchall()
+    def find_songs(self, query=None):
+        '''Returns a list of Song objects containing the query string.
+        If the query is empty, return all of them.
+        '''
+        if query:
+            self.c.execute("SELECT title, lyrics, copyright FROM song "
+                           "WHERE title LIKE '?' OR lyrics LIKE '?'", query)
+        else:
+            self.c.execute("SELECT title, lyrics, copyright FROM song")
+        results = self.c.fetchall()
+        return [Song(r[0], r[1], r[2]) for r in results]
 
     def get_song(self, id):
         self.c.execute("SELECT TOP 1 title, lyrics, copyright"
