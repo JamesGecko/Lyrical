@@ -48,6 +48,7 @@ class LyricalControl(QMainWindow, Ui_MainWindow):
         self.songs = []
 
         self.lyrics.clicked.connect(self.update_screen)
+        self.add_button.clicked.connect(self.show_picker)
 
     def add_song(self, song):
         self.songs.append(song)
@@ -68,27 +69,33 @@ class LyricalControl(QMainWindow, Ui_MainWindow):
         self.projector.update(Slide(title, content))
 
     @QtCore.Slot()
-    def launch_picker(self):
+    def show_picker(self):
         db = get_database() #TODO: is multiple sqlite db handles the best way?
         picker = LyricalPicker(db, self)
+        picker.show()
+
 
 class LyricalPicker(QMainWindow, Ui_Picker):
     def __init__(self, db, controller):
         QMainWindow.__init__(self)
         self.db = db
+        self.songs = []
         self.controller = controller
         self.setupUi(self)
 
         self.song_list.clicked.connect(self.click_song)
-        self.song_list.double_click.connect(self.add_song)
+        #self.song_list.double_click.connect(self.add_song)
         self.add_button.clicked.connect(self.add_song)
         self.edit_button.clicked.connect(self.edit_song)
         self.cancel_button.clicked.connect(self.close_window)
+        #self.search_text.valueChanged.connect(self.search)
 
     @QtCore.Slot()
     def click_song(self):
         '''Show song in self.lyrics
         '''
+        #get index of item in song_list clicked
+        #self.songs[index].lyrics_list
         pass
 
     @QtCore.Slot()
@@ -102,6 +109,18 @@ class LyricalPicker(QMainWindow, Ui_Picker):
         '''Give LyricalEdit the song id
         '''
         pass
+
+    @QtCore.Slot()
+    def search(self):
+        results = self.db.find_song(self.search_text)
+        self.songs = results
+        lyrics = [song.lyrics for song in results]
+        self.lyrics.insertItems(0, song.lyrics_list())
+        self.lyrics.setCurrentRow(0)
+
+        titles = [song.title for song in results]
+        self.song_list.insertItems(0, song.title)
+        self.song_list.setCurrentRow(0)
 
     @QtCore.Slot()
     def close_window(self):
