@@ -62,6 +62,10 @@ class LyricalControl(QMainWindow, Ui_MainWindow):
         #controller.song_list.getCurrentRow()
         pass
 
+    def keyPressEvent(self, e):
+        if e.key() == QtCore.Qt.Key_Escape:
+            self.close()
+
     @QtCore.Slot()
     def update_screen(self):
         title = self.song_list.currentItem().text()
@@ -71,8 +75,8 @@ class LyricalControl(QMainWindow, Ui_MainWindow):
     @QtCore.Slot()
     def show_picker(self):
         db = get_database() #TODO: is multiple sqlite db handles the best way?
-        picker = LyricalPicker(db, self)
-        picker.show()
+        self.picker = LyricalPicker(db, self)
+        self.picker.show()
 
 
 class LyricalPicker(QMainWindow, Ui_Picker):
@@ -84,11 +88,11 @@ class LyricalPicker(QMainWindow, Ui_Picker):
         self.setupUi(self)
 
         self.song_list.clicked.connect(self.click_song)
-        #self.song_list.double_click.connect(self.add_song)
+        self.song_list.doubleClicked.connect(self.add_song)
         self.add_button.clicked.connect(self.add_song)
         self.edit_button.clicked.connect(self.edit_song)
         self.cancel_button.clicked.connect(self.close_window)
-        #self.search_text.valueChanged.connect(self.search)
+        self.search_text.textChanged.connect(self.search)
 
     @QtCore.Slot()
     def click_song(self):
