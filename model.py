@@ -50,7 +50,7 @@ class Database(object):
         self.conn = sqlite3.connect(db_path)
         self.c = self.conn.cursor()
 
-    def generate_new(self):
+    def create_tables(self):
         self.c.execute('CREATE TABLE songs ( '
                        'id INTEGER PRIMARY KEY, '
                        'title STRING, '
@@ -58,21 +58,18 @@ class Database(object):
                        'copyright STRING)')
 
     def add_song(self, song):
-        try:
-            self.c.execute('INSERT INTO songs (title, lyrics, copyright) '
-                           'VALUES (?, ?, ?)',
-                           (song.title, song.lyrics, song.copyright))
-            self.c.commit()
-            return self.c.lastrowid
-        except:
-            return False
+        self.c.execute('INSERT INTO songs (title, lyrics, copyright) '
+                        'VALUES (?, ?, ?)',
+                        (song.title, song.lyrics, song.copyright))
+        self.conn.commit()
+        return self.c.lastrowid
 
     def update_song(self, song):
         try:
             self.c.execute('UPDATE songs SET title=?, lyrics=?, copyright=? '
                            'WHERE id=?',
                            (song.title, song.lyrics, song.copyright, song.id))
-            self.c.commit()
+            self.conn.commit()
             return True
         except:
             return False
@@ -88,16 +85,18 @@ class Database(object):
         If the query is empty, return all of them.
         '''
         if query:
-            self.c.execute("SELECT title, lyrics, copyright FROM song "
-                           "WHERE title LIKE '?' OR lyrics LIKE '?'", query)
+            query = "%%%s%%" % query
+            self.c.execute("SELECT DISTINCT title, lyrics, copyright "
+                           "FROM songs WHERE title LIKE ? OR lyrics LIKE ?",
+                           (query, query))
         else:
-            self.c.execute("SELECT title, lyrics, copyright FROM song")
+            self.c.execute("SELECT title, lyrics, copyright FROM songs")
         results = self.c.fetchall()
         return [Song(r[0], r[1], r[2]) for r in results]
 
     def get_song(self, id):
         self.c.execute("SELECT TOP 1 title, lyrics, copyright"
-                       "FROM song where id = ?", id)
+                       "FROM songs where id = ?", (id,))
         return Song(*self.c.fetchone())
 
     def __del__(self):
