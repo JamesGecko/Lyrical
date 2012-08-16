@@ -39,6 +39,10 @@ class LyricalProjector(QWidget, Ui_Projector):
         self.title.setText(slide.title)
         self.content.setText(slide.content)
 
+    def focusInEvent(self):
+        '''When focused, set the focus back to the control window.
+        '''
+        pass
 
 class LyricalControl(QMainWindow, Ui_MainWindow):
     def __init__(self, projector_window):
@@ -52,7 +56,7 @@ class LyricalControl(QMainWindow, Ui_MainWindow):
 
     def add_song(self, song):
         self.songs.append(song)
-        controller.song_list.addItem(song.title)
+        self.song_list.addItem(song.title)
 
     def remove_song(self):
         #controller.song_list.removeCurrentRow(0)
@@ -64,7 +68,7 @@ class LyricalControl(QMainWindow, Ui_MainWindow):
 
     def keyPressEvent(self, e):
         if e.key() == QtCore.Qt.Key_Escape:
-            self.close()
+            sys.exit()
 
     @QtCore.Slot()
     def update_screen(self):
@@ -94,6 +98,10 @@ class LyricalPicker(QMainWindow, Ui_Picker):
         self.cancel_button.clicked.connect(self.close_window)
         self.search_text.textChanged.connect(self.search)
 
+    def keyPressEvent(self, e):
+        if e.key() == QtCore.Qt.Key_Escape:
+            self.close()
+
     @QtCore.Slot()
     def click_song(self):
         '''Show song in self.lyrics
@@ -106,7 +114,9 @@ class LyricalPicker(QMainWindow, Ui_Picker):
     def add_song(self):
         '''Give LyricalControl the song id
         '''
-        self.controller.add_song(self.song_list.currentItem())
+        song = self.song_list.currentItem()
+        if song:
+            self.controller.add_song(song)
 
     @QtCore.Slot()
     def edit_song(self):
@@ -115,16 +125,24 @@ class LyricalPicker(QMainWindow, Ui_Picker):
         pass
 
     @QtCore.Slot()
+    def new_song(self):
+        '''Create a new song and add it to LyricalControl
+        '''
+        pass
+
+    @QtCore.Slot()
     def search(self):
-        results = self.db.find_song(self.search_text)
+        results = self.db.find_songs(self.search_text.text())
         self.songs = results
-        lyrics = [song.lyrics for song in results]
-        self.lyrics.insertItems(0, song.lyrics_list())
-        self.lyrics.setCurrentRow(0)
+        lyrics = [song.lyrics_list() for song in results]
+        for lyric in lyrics:
+            self.lyrics.insertItems(0, lyric)
+            self.lyrics.setCurrentRow(0)
 
         titles = [song.title for song in results]
-        self.song_list.insertItems(0, song.title)
-        self.song_list.setCurrentRow(0)
+        for title in titles:
+            self.song_list.insertItems(0, title)
+            self.song_list.setCurrentRow(0)
 
     @QtCore.Slot()
     def close_window(self):
@@ -172,8 +190,8 @@ def main():
     app = QApplication(sys.argv)
     projector = LyricalProjector()
     controller = LyricalControl(projector)
-    controller.show()
     projector.show()
+    controller.show()
 
     #db = get_database()
     #editor = LyricalEditor(db)
