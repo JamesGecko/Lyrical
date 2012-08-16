@@ -57,10 +57,11 @@ class Database(object):
                        'lyrics STRING, '
                        'copyright STRING)')
 
-    def add_song(self, song):
-        self.c.execute('INSERT INTO songs (title, lyrics, copyright) '
-                        'VALUES (?, ?, ?)',
-                        (song.title, song.lyrics, song.copyright))
+    def add_song(self, *songs):
+        for song in songs:
+            self.c.execute('INSERT INTO songs (title, lyrics, copyright) '
+                            'VALUES (?, ?, ?)',
+                            (song.title, song.lyrics, song.copyright))
         self.conn.commit()
         return self.c.lastrowid
 

@@ -35,8 +35,7 @@ class TestDatabase(unittest.TestCase):
 
     def test_finding_songs(self):
         db = self.db()
-        db.add_song(self.a)
-        db.add_song(self.b)
+        db.add_song(self.a, self.b)
         result = db.find_songs('grace')
         self.assertEqual(len(result), 2)
         self.assertEqual(result[0].title, self.a.title)
@@ -44,8 +43,7 @@ class TestDatabase(unittest.TestCase):
 
     def test_getting_title_list(self):
         db = self.db()
-        db.add_song(self.a)
-        db.add_song(self.b)
+        db.add_song(self.a, self.b)
         results = db.find_songs('grace')
         for song in results:
             print song.title
