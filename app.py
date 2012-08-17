@@ -51,6 +51,7 @@ class LyricalControl(QMainWindow, Ui_MainWindow):
         self.setupUi(self)
         self.songs = []
 
+        self.song_list.clicked.connect(self.click_song)
         self.lyrics.clicked.connect(self.update_screen)
         self.add_button.clicked.connect(self.show_picker)
 
@@ -66,9 +67,23 @@ class LyricalControl(QMainWindow, Ui_MainWindow):
         #controller.song_list.getCurrentRow()
         pass
 
+    def show_lyrics_list(self, lyrics):
+        self.lyrics.clear()
+        self.lyrics.insertItems(0, lyrics)
+        self.lyrics.setCurrentRow(0)
+
     def keyPressEvent(self, e):
         if e.key() == QtCore.Qt.Key_Escape:
             sys.exit()
+
+    @QtCore.Slot()
+    def click_song(self):
+        '''When clicked, show correct lyrics
+        '''
+        if self.song_list.count() > 0 and any(self.songs):
+            i = self.song_list.currentRow()
+            print i
+            self.show_lyrics_list(self.songs[i].lyrics_list())
 
     @QtCore.Slot()
     def update_screen(self):
@@ -102,21 +117,28 @@ class LyricalPicker(QMainWindow, Ui_Picker):
         if e.key() == QtCore.Qt.Key_Escape:
             self.close()
 
+    def show_lyrics(self, lyrics):
+        '''Update the lyrics QListWidget
+        '''
+        self.lyrics.clear()
+        self.lyrics.insertItems(0, lyrics)
+        self.lyrics.setCurrentRow(0)
+
     @QtCore.Slot()
     def click_song(self):
-        '''Show song in self.lyrics
+        '''When clicked, show correct lyrics.
         '''
-        #get index of item in song_list clicked
-        #self.songs[index].lyrics_list
-        pass
+        if self.song_list.count() > 0 and any(self.songs):
+            i = self.song_list.currentRow()
+            self.show_lyrics(self.songs[i].lyrics_list())
 
     @QtCore.Slot()
     def add_song(self):
         '''Give LyricalControl the song id
         '''
-        song = self.song_list.currentItem()
-        if song:
-            self.controller.add_song(song)
+        song_index = self.song_list.currentRow()
+        if self.songs:
+            self.controller.add_song(self.songs[song_index])
 
     @QtCore.Slot()
     def edit_song(self):
@@ -132,17 +154,15 @@ class LyricalPicker(QMainWindow, Ui_Picker):
 
     @QtCore.Slot()
     def search(self):
-        results = self.db.find_songs(self.search_text.text())
-        self.songs = results
-        lyrics = [song.lyrics_list() for song in results]
-        for lyric in lyrics:
-            self.lyrics.insertItems(0, lyric)
-            self.lyrics.setCurrentRow(0)
+        self.songs = self.db.find_songs(self.search_text.text())
 
-        titles = [song.title for song in results]
-        for title in titles:
-            self.song_list.insertItems(0, title)
-            self.song_list.setCurrentRow(0)
+        titles = [song.title for song in self.songs]
+        self.song_list.clear()
+        self.song_list.insertItems(0, titles)
+        self.song_list.setCurrentRow(0)
+
+        if any(self.songs):
+            self.show_lyrics(self.songs[0].lyrics_list())
 
     @QtCore.Slot()
     def close_window(self):
@@ -197,11 +217,17 @@ def main():
     #editor = LyricalEditor(db)
     #editor.show()
 
-    song = Song()
-    controller.lyrics.insertItems(0, song.lyrics_list())
-    controller.lyrics.setCurrentRow(0)
-    controller.song_list.addItem(song.title)
-    controller.song_list.setCurrentRow(0)
+    song = Song(None, 'Amazing Grace', """Amazing Grace, how sweet the sound,
+That saved a wretch like me
+I once was lost but now am found,
+Was blind but now I see.
+
+'Twas Grace that taught
+my heart to fear
+And Grace, my fears relieved
+How precious did that Grace appear
+the hour I first believed""")
+    controller.add_song(song)
 
     desktop = QDesktopWidget()
     if desktop.screenCount() < 2:
