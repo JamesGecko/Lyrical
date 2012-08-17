@@ -36,21 +36,17 @@ class TestDatabase(unittest.TestCase):
     def test_finding_songs(self):
         db = self.db()
         db.add_song(self.a, self.b)
-        result = db.find_songs('grace')
-        self.assertEqual(len(result), 2)
-        self.assertEqual(result[0].title, self.a.title)
-        self.assertEqual(result[1].title, self.b.title)
-
-    def test_getting_title_list(self):
-        db = self.db()
-        db.add_song(self.a, self.b)
         results = db.find_songs('grace')
-        for song in results:
-            print song.title
+        self.assertEqual(len(results), 2)
         titles = [song.title for song in results]
-        self.assertEqual(results[0].title, 'Amazing Grace')
-        self.assertEqual(results[1].title, 'Grace Like Rain')
+        self.assertTrue(self.a.title in titles)
+        self.assertTrue(self.b.title in titles)
 
+    def test_fetching_song(self):
+        pass
+
+    def test_removing_song(self):
+        pass
 
 if __name__ == '__main__':
     unittest.main()
