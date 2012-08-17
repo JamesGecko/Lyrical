@@ -3,7 +3,7 @@ from model import Database, Song
 
 class TestDatabase(unittest.TestCase):
     def setUp(self):
-        self.a = Song('Amazing Grace', """Amazing Grace, how sweet the sound,
+        self.a = Song(None, 'Amazing Grace', """Amazing Grace, how sweet the sound,
                                   That saved a wretch like me
                                   I once was lost but now am found,
                                   Was blind but now I see.
@@ -13,7 +13,7 @@ class TestDatabase(unittest.TestCase):
                                   And Grace, my fears relieved
                                   How precious did that Grace appear
                                   the hour I first believed""", None)
-        self.b = Song('Grace Like Rain', """Amazing grace, how sweet the sound
+        self.b = Song(None, 'Grace Like Rain', """Amazing grace, how sweet the sound
                                     That saved a wretch like me
                                     I once was lost, but now I'm found
                                     Was blind, but now I see so clearly
