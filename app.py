@@ -82,7 +82,6 @@ class LyricalControl(QMainWindow, Ui_MainWindow):
         '''
         if self.song_list.count() > 0 and any(self.songs):
             i = self.song_list.currentRow()
-            print i
             self.show_lyrics_list(self.songs[i].lyrics_list())
 
     @QtCore.Slot()

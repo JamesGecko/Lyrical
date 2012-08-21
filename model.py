@@ -42,20 +42,16 @@ class Database(object):
             return rowids
 
     def update_song(self, song):
-        try:
-            self.c.execute('UPDATE songs SET title=?, lyrics=?, copyright=? '
-                           'WHERE id=?',
-                           (song.title, song.lyrics, song.copyright, song.id))
-            self.conn.commit()
-            return True
-        except:
-            return False
+        self.c.execute('UPDATE songs SET title=?, lyrics=?, copyright=? '
+                        'WHERE id=?',
+                        (song.title, song.lyrics, song.copyright, song.id))
+        self.conn.commit()
 
     def push_song(self, song):
         if song.id:
-            self.update_song(song)
+            return self.update_song(song)
         else:
-            self.add_song(song)
+            return self.add_song(song)
 
     def find_songs(self, query=None):
         '''Returns a list of Song objects containing the query string.

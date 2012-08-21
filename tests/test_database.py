@@ -48,5 +48,12 @@ class TestDatabase(unittest.TestCase):
     def test_removing_song(self):
         pass
 
-if __name__ == '__main__':
-    unittest.main()
+    def test_updating_song(self):
+        db = self.db()
+        song = Song(None, 'test a', 'foobar')
+        id = db.push_song(song)
+        song.id = id
+        song.title = 'test b'
+        db.push_song(song)
+        result = db.find_songs('foobar')
+        self.assertEqual(result[0].title, 'test b')
