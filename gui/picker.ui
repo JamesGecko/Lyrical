@@ -70,6 +70,13 @@
        </spacer>
       </item>
       <item>
+       <widget class="QPushButton" name="new_button">
+        <property name="text">
+         <string>New</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QPushButton" name="edit_button">
         <property name="text">
          <string>Edit</string>
