@@ -227,6 +227,8 @@ def get_database():
     data_directory = os.path.expanduser('~/.lyrical')
     try:
         os.makedirs(data_directory)
+        db = Database(data_directory + '/songs.sqlite')
+        db.create_tables()
     except OSError, e:
         if e.errno != errno.EEXIST:
             raise
