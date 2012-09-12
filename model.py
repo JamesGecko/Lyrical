@@ -11,10 +11,17 @@ class Song(object):
         return self.lyrics.split('\n\n')
 
     def validate(self):
-        if self.title == '':
-            return 'Title cannot be blank'
-        if self.lyrics == '':
-            return 'Lyrics cannot be empty'
+        if not self.title:
+            return False, 'Title cannot be blank'
+        elif not self.lyrics:
+            return False, 'Lyrics cannot be empty'
+        else:
+            return True, ''
+
+    def __repr__(self):
+        return '{!r} - {!r}\n{!r}\n{!r}'.format(self.id, self.title,
+                                        self.lyrics, self.copyright)
+
 
 class Database(object):
     def __init__(self, db_path):
@@ -48,6 +55,9 @@ class Database(object):
         self.conn.commit()
 
     def push_song(self, song):
+        valid, reason = song.validate()
+        assert valid == True,\
+            "Song is not valid: {} \n {!r}".format(reason, song)
         if song.id:
             return self.update_song(song)
         else:
