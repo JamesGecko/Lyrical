@@ -193,7 +193,6 @@ class LyricalEditor(QMainWindow, Ui_Editor):
         self.db = db
         self.callbacks = callbacks if callbacks else []
         self.song = song if song else Song(None, '', '', '')
-
         self.changes_since_save = False
 
         self.save_button.clicked.connect(self.save_song)
@@ -203,20 +202,25 @@ class LyricalEditor(QMainWindow, Ui_Editor):
 
     @QtCore.Slot()
     def close_window(self):
-        pass
+        # TODO: check if changes have been made since save.
+        if self.title != self.song.title or self.lyrics != self.song.lyrics:
+            pass
+        self.close()
 
     @QtCore.Slot()
-    def save_edits(self):
-        self.song.title = self.title
-        self.song.lyrics = self.lyrics
+    def save_song(self):
+        self.song.title = self.title.text()
+        self.song.lyrics = self.lyrics.toPlainText()
 
-        validation = self.song.validate
-
-        if validation:
-            self.db.push_song(song)
+        if self.song.validate()[0]:
+            self.db.push_song(self.song)
+            for callback in self.callbacks:
+                apply(callback)
             self.close_window()
         else:
-            pass # show error dialog
+            print "Validation failed!"
+            print self.song.validate()[1]
+            # TODO: show error dialog
 
 
 def get_database():
