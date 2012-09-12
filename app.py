@@ -103,12 +103,14 @@ class LyricalPicker(QMainWindow, Ui_Picker):
         self.db = db
         self.songs = []
         self.controller = controller
+        self.editors = []
         self.setupUi(self)
 
         self.song_list.clicked.connect(self.click_song)
         self.song_list.doubleClicked.connect(self.add_song)
         self.add_button.clicked.connect(self.add_song)
         self.edit_button.clicked.connect(self.edit_song)
+        self.new_button.clicked.connect(self.edit_song)
         self.cancel_button.clicked.connect(self.close_window)
         self.search_text.textChanged.connect(self.search)
 
@@ -123,6 +125,18 @@ class LyricalPicker(QMainWindow, Ui_Picker):
         self.lyrics.insertItems(0, lyrics)
         self.lyrics.setCurrentRow(0)
 
+    def selected_song(self):
+        '''Get the Song for the currently selected title.
+        '''
+        song_index = self.song_list.currentRow()
+        if self.songs:
+            return self.songs[song_index]
+
+    def update_view_after_edit(self):
+        '''A callback to update the lyrics pane when the song has been edited.
+        '''
+        pass
+
     @QtCore.Slot()
     def click_song(self):
         '''When clicked, show correct lyrics.
@@ -133,17 +147,18 @@ class LyricalPicker(QMainWindow, Ui_Picker):
 
     @QtCore.Slot()
     def add_song(self):
-        '''Give LyricalControl the song id
+        '''Give LyricalControl the song
         '''
-        song_index = self.song_list.currentRow()
-        if self.songs:
-            self.controller.add_song(self.songs[song_index])
+        self.controller.add_song(self.selected_song())
 
     @QtCore.Slot()
     def edit_song(self):
-        '''Give LyricalEdit the song id
+        '''Give a LyricalEditor instance the song
         '''
-        pass
+        editor = LyricalEditor(self.db, (self.update_view_after_edit,),
+                               self.selected_song())
+        editor.show()
+        self.editors.append(editor)
 
     @QtCore.Slot()
     def new_song(self):
@@ -169,13 +184,22 @@ class LyricalPicker(QMainWindow, Ui_Picker):
 
 
 class LyricalEditor(QMainWindow, Ui_Editor):
-    def __init__(self, db, song=None):
+    def __init__(self, db, callbacks=None, song=None):
+        '''Takes a database object, an (optional) list of functions to
+        execute on save, and an (optional) Song.
+        '''
         QMainWindow.__init__(self)
         self.setupUi(self)
-
         self.db = db
-        if not song:
-            song = Song('','')
+        self.callbacks = callbacks if callbacks else []
+        self.song = song if song else Song(None, '', '', '')
+
+        self.changes_since_save = False
+
+        self.save_button.clicked.connect(self.save_song)
+
+        #self.title.text = self.song.title
+        #self.lyrics.text = self.song.lyrics
 
     @QtCore.Slot()
     def close_window(self):
