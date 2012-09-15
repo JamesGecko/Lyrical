@@ -132,11 +132,6 @@ class LyricalPicker(QMainWindow, Ui_Picker):
         if self.songs:
             return self.songs[song_index]
 
-    def update_view_after_edit(self):
-        '''A callback to update the lyrics pane when the song has been edited.
-        '''
-        pass
-
     @QtCore.Slot()
     def click_song(self):
         '''When clicked, show correct lyrics.
@@ -155,7 +150,7 @@ class LyricalPicker(QMainWindow, Ui_Picker):
     def edit_song(self):
         '''Give a LyricalEditor instance the song
         '''
-        editor = LyricalEditor(self.db, (self.update_view_after_edit,),
+        editor = LyricalEditor(self.db, (self.click_song,),
                                self.selected_song())
         editor.show()
         self.editors.append(editor)
@@ -197,8 +192,8 @@ class LyricalEditor(QMainWindow, Ui_Editor):
 
         self.save_button.clicked.connect(self.save_song)
 
-        #self.title.text = self.song.title
-        #self.lyrics.text = self.song.lyrics
+        self.title.setText(self.song.title)
+        self.lyrics.setPlainText(self.song.lyrics)
 
     @QtCore.Slot()
     def close_window(self):
