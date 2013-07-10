@@ -156,12 +156,6 @@ class LyricalPicker(QMainWindow, Ui_Picker):
         self.editors.append(editor)
 
     @QtCore.Slot()
-    def new_song(self):
-        '''Create a new song and add it to LyricalControl
-        '''
-        pass
-
-    @QtCore.Slot()
     def search(self):
         self.songs = self.db.find_songs(self.search_text.text())
 
