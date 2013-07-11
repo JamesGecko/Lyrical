@@ -12,3 +12,5 @@ editor : lyrical/gui/ui_editor.py
 picker : lyrical/gui/ui_picker.py
 	pyside-uic lyrical/gui/picker.ui > lyrical/gui/ui_picker.py
 
+test:
+	python -m unittest discover
