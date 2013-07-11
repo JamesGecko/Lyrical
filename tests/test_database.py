@@ -1,5 +1,6 @@
 import unittest
-from model import Database, Song
+from .context import lyrical
+from lyrical.model import Database, Song
 
 class TestDatabase(unittest.TestCase):
     def setUp(self):

@@ -8,7 +8,7 @@ churches in their worship services.
 - PySide is a major dependency, and it isn't available via pip.
 Sorry, virtualenv users. [Get PySide](http://qt-project.org/wiki/Get-PySide).
 - Then run `make` on UNIX-like systems, or `build.bat` on Windows.
-- Execute `app.py` to start the application.
+- Execute `lyrical/app.py` to start the application.
 - On first run, Lyrical will create an sqlite song database in `~/.lyrical`.
 
 ##Song file format
