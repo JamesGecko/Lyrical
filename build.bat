@@ -1,5 +1,5 @@
 @echo off
-pyside-uic gui/mainwindow.ui > gui/ui_mainwindow.py
-pyside-uic gui/projector.ui > gui/ui_projector.py
-pyside-uic gui/edit.ui > gui/ui_editor.py
-pyside-uic gui/picker.ui > gui/ui_picker.py
+pyside-uic lyrical/gui/mainwindow.ui > lyrical/gui/ui_mainwindow.py
+pyside-uic lyrical/gui/projector.ui > lyrical/gui/ui_projector.py
+pyside-uic lyrical/gui/edit.ui > lyrical/gui/ui_editor.py
+pyside-uic lyrical/gui/picker.ui > lyrical/gui/ui_picker.py

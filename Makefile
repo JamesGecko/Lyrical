@@ -1,14 +1,16 @@
 main : mainwindow projector editor picker
 
-projector : gui/ui_projector.py
-	pyside-uic gui/projector.ui > gui/ui_projector.py
+projector : lyrical/gui/ui_projector.py
+	pyside-uic lyrical/gui/projector.ui > lyrical/gui/ui_projector.py
 
-mainwindow : gui/mainwindow.ui
-	pyside-uic gui/mainwindow.ui > gui/ui_mainwindow.py
+mainwindow : lyrical/gui/mainwindow.ui
+	pyside-uic lyrical/gui/mainwindow.ui > lyrical/gui/ui_mainwindow.py
 
-editor : gui/ui_editor.py
-	pyside-uic gui/edit.ui > gui/ui_editor.py
+editor : lyrical/gui/ui_editor.py
+	pyside-uic lyrical/gui/edit.ui > lyrical/gui/ui_editor.py
 
-picker : gui/ui_picker.py
-	pyside-uic gui/picker.ui > gui/ui_picker.py
+picker : lyrical/gui/ui_picker.py
+	pyside-uic lyrical/gui/picker.ui > lyrical/gui/ui_picker.py
 
+test:
+	python -m unittest discover
