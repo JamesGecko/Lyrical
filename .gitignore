@@ -1,1 +1,3 @@
-gui/ui_*.py
+lyrical/gui/ui_*.py
+*.pyc
+*.sqlite
