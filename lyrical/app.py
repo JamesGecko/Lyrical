@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import sys
 import os, errno
+from PySide.QtCore import Qt
 from PySide.QtGui import QApplication
 from PySide.QtGui import QDesktopWidget
 from PySide.QtGui import QMessageBox
@@ -32,10 +33,19 @@ class ModalDialog(QWidget):
 
 def main():
     db = get_database()
+    projection_screen = 1
+
     app = QApplication(sys.argv)
+    desktop = QDesktopWidget()
     projector = LyricalProjector()
     controller = LyricalControl(projector, db)
-    projector.show()
+
+    coords = desktop.screenGeometry(projection_screen)
+    projector.setWindowFlags(Qt.FramelessWindowHint)
+    projector.move(coords.topLeft())
+    projector.resize(coords.size())
+    projector.showFullScreen()
+
     controller.show()
     controller.raise_()
 
@@ -54,7 +64,6 @@ How precious did that Grace appear
 the hour I first believed""")
     controller.add_song(song)
 
-    desktop = QDesktopWidget()
     if desktop.screenCount() < 2:
         error = ModalDialog()
         error.error('Need at least two screens connected.')
