@@ -3,6 +3,8 @@ import sys
 import os, errno
 from PySide.QtGui import QApplication
 from PySide.QtGui import QDesktopWidget
+from PySide.QtGui import QMessageBox
+from PySide.QtGui import QWidget
 from model import Database, Song
 from sys import stderr
 
@@ -21,6 +23,10 @@ def get_database():
             raise
     db = Database(data_directory + '/songs.sqlite')
     return db
+
+class ModalDialog(QWidget):
+    def error(self, message):
+        QMessageBox.critical(self, "Error", message)
 
 def main():
     db = get_database()
@@ -47,7 +53,8 @@ the hour I first believed""")
 
     desktop = QDesktopWidget()
     if desktop.screenCount() < 2:
-        stderr.write('Need at least two screens connected.')
+        error = ModalDialog()
+        error.error('Need at least two screens connected.')
         sys.exit()
     else:
         sys.exit(app.exec_())
