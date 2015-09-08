@@ -20,9 +20,11 @@ def get_database():
         db.create_tables()
     except OSError, e:
         if e.errno != errno.EEXIST:
+            dialog = ModalDialog()
+            dialog.error('Database init error {}: {}'.format(e.errno, e.strerror))
             raise
-    db = Database(data_directory + '/songs.sqlite')
-    return db
+    else:
+        return db
 
 class ModalDialog(QWidget):
     def error(self, message):
