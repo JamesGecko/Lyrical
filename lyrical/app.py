@@ -35,6 +35,7 @@ def main():
     controller = LyricalControl(projector, db)
     projector.show()
     controller.show()
+    controller.raise_()
 
     #editor = LyricalEditor(db)
     #editor.show()
