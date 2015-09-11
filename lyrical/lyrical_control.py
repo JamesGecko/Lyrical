@@ -1,3 +1,4 @@
+import sys
 from gui.ui_mainwindow import Ui_MainWindow
 from PySide.QtGui import QApplication, QMainWindow
 from PySide import QtCore
@@ -36,6 +37,9 @@ class LyricalControl(QMainWindow, Ui_MainWindow):
     def keyPressEvent(self, e):
         if e.key() == QtCore.Qt.Key_Escape:
             sys.exit()
+
+    def closeEvent(self, event):
+        sys.exit()
 
     @QtCore.Slot()
     def click_song(self):
