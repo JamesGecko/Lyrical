@@ -41,6 +41,12 @@ class LyricalControl(QMainWindow, Ui_MainWindow):
     def closeEvent(self, event):
         sys.exit()
 
+    def hideEvent(self, event):
+        self.projector.hide()
+
+    def showEvent(self, event):
+        self.projector.show()
+
     @QtCore.Slot()
     def click_song(self):
         '''When clicked, show correct lyrics
