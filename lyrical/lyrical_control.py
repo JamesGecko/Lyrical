@@ -1,6 +1,7 @@
 import sys
 from gui.ui_mainwindow import Ui_MainWindow
 from PySide.QtGui import QApplication, QMainWindow
+from PySide.QtGui import QApplication, QMainWindow, QIcon
 from PySide import QtCore
 from lyrical_picker import LyricalPicker
 from slide import Slide
@@ -8,6 +9,7 @@ from slide import Slide
 class LyricalControl(QMainWindow, Ui_MainWindow):
     def __init__(self, projector_window, db):
         QMainWindow.__init__(self)
+        self.setWindowIcon(QIcon('icon.png'))
         self.projector = projector_window
         self.setupUi(self)
         self.songs = []

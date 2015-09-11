@@ -18,3 +18,7 @@ simple text files for theoretical easy migration between programs.
 - The second line is the copyright. If this line is blank, Lyrical will skip it.
 - All following paragraphs are individual verses. Each one will recieve its own
 slide.
+
+## License
+Lyrical is available under the MIT license.
+Lyrical's icon was made by Sebastian Kraft and is licensed under the GPLv2
