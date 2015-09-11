@@ -1,6 +1,5 @@
-import sys
 from gui.ui_mainwindow import Ui_MainWindow
-from PySide.QtGui import QApplication, QMainWindow
+from PySide.QtCore import Qt, QCoreApplication
 from PySide.QtGui import QApplication, QMainWindow, QIcon
 from PySide import QtCore
 from lyrical_picker import LyricalPicker
@@ -38,10 +37,10 @@ class LyricalControl(QMainWindow, Ui_MainWindow):
 
     def keyPressEvent(self, e):
         if e.key() == QtCore.Qt.Key_Escape:
-            sys.exit()
+            QCoreApplication.instance().quit()
 
     def closeEvent(self, event):
-        sys.exit()
+        QCoreApplication.instance().quit()
 
     def hideEvent(self, event):
         self.projector.hide()
