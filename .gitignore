@@ -1,3 +1,4 @@
 lyrical/gui/ui_*.py
 *.pyc
 *.sqlite
+/venv/*
