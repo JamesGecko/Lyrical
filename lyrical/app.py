@@ -39,6 +39,7 @@ def main():
     desktop = QDesktopWidget()
     projector = LyricalProjector()
     controller = LyricalControl(projector, db)
+    projector.controller = controller
 
     coords = desktop.screenGeometry(projection_screen)
     projector.setWindowFlags(Qt.FramelessWindowHint)

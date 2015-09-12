@@ -1,10 +1,13 @@
+from PySide.QtCore import Qt
 from PySide.QtGui import QWidget
 from gui.ui_projector import Ui_Projector
 
 class LyricalProjector(QWidget, Ui_Projector):
     def __init__(self):
         QWidget.__init__(self)
+        self.setFocusPolicy(Qt.ClickFocus)
         self.setupUi(self)
+        self.controller = None
         self.style = '''
         color: white;
         background-color: black;
@@ -21,8 +24,11 @@ class LyricalProjector(QWidget, Ui_Projector):
         self.title.setText(slide.title)
         self.content.setText(slide.content)
 
-    def focusInEvent(self):
+    def focusInEvent(self, event):
         '''When focused, set the focus back to the control window.
         '''
-        pass
+        if not self.controller:
+            raise 'Controller not set'
+        self.controller.raise_()
+        self.controller.activateWindow()
 
