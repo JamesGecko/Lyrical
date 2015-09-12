@@ -36,7 +36,6 @@ def main():
     projection_screen = 1
 
     app = QApplication(sys.argv)
-    desktop = QDesktopWidget()
     projector = LyricalProjector(projection_screen)
     controller = LyricalControl(projector, db)
     projector.controller = controller
@@ -59,7 +58,7 @@ How precious did that Grace appear
 the hour I first believed""")
     controller.add_song(song)
 
-    if desktop.screenCount() < 2:
+    if QDesktopWidget().screenCount() < 2:
         error = ModalDialog()
         error.error('Need at least two screens connected.')
         sys.exit()
