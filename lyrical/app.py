@@ -37,15 +37,9 @@ def main():
 
     app = QApplication(sys.argv)
     desktop = QDesktopWidget()
-    projector = LyricalProjector()
+    projector = LyricalProjector(projection_screen)
     controller = LyricalControl(projector, db)
     projector.controller = controller
-
-    coords = desktop.screenGeometry(projection_screen)
-    projector.setWindowFlags(Qt.FramelessWindowHint)
-    projector.move(coords.topLeft())
-    projector.resize(coords.size())
-    projector.showFullScreen()
 
     controller.show()
     controller.raise_()

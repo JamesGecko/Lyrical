@@ -1,12 +1,14 @@
 from PySide.QtCore import Qt
 from PySide.QtGui import QWidget
+from PySide.QtGui import QDesktopWidget
 from gui.ui_projector import Ui_Projector
 
 class LyricalProjector(QWidget, Ui_Projector):
-    def __init__(self):
+    def __init__(self, screen_number):
         QWidget.__init__(self)
         self.setFocusPolicy(Qt.ClickFocus)
         self.setupUi(self)
+        self._assignToScreen(screen_number)
         self.controller = None
         self.style = '''
         color: white;
@@ -17,6 +19,14 @@ class LyricalProjector(QWidget, Ui_Projector):
         text-align: center;
         ''' #TODO: text-align doesn't work with QTextBrowser widgets
         self.content.setStyleSheet(self.style)
+
+    def _assignToScreen(self, screen_number):
+        coords = QDesktopWidget().screenGeometry(screen_number)
+        self.setWindowFlags(Qt.FramelessWindowHint)
+        self.move(coords.topLeft())
+        self.resize(coords.size())
+        self.showFullScreen()
+
 
     def update(self, slide):
         '''set title and content to slide
