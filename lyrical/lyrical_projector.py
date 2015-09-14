@@ -8,6 +8,7 @@ class LyricalProjector(QWidget, Ui_Projector):
         QWidget.__init__(self)
         self.setFocusPolicy(Qt.ClickFocus)
         self.setupUi(self)
+        self.setWindowTitle('Projector Screen')
         self._assignToScreen(screen_number)
         self.controller = None
         self.style = '''

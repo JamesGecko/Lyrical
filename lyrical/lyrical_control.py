@@ -9,9 +9,10 @@ class LyricalControl(QMainWindow, Ui_MainWindow):
     def __init__(self, projector_window, db):
         QMainWindow.__init__(self)
         self.setFocusPolicy(Qt.StrongFocus)
-        self.setWindowIcon(QIcon('icon.png'))
         self.projector = projector_window
         self.setupUi(self)
+        self.setWindowTitle('Lyrical')
+        self.setWindowIcon(QIcon('icon.png'))
         self.songs = []
         self.db = db
 
