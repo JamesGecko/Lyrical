@@ -3,6 +3,7 @@ from PySide.QtCore import Qt, QCoreApplication
 from PySide.QtGui import QApplication, QMainWindow, QIcon
 from PySide import QtCore
 from lyrical_picker import LyricalPicker
+from lyrical_editor import LyricalEditor
 from slide import Slide
 
 class LyricalControl(QMainWindow, Ui_MainWindow):
@@ -19,6 +20,7 @@ class LyricalControl(QMainWindow, Ui_MainWindow):
         self.song_list.clicked.connect(self.click_song)
         self.lyrics.clicked.connect(self.update_screen)
         self.add_button.clicked.connect(self.show_picker)
+        self.edit_button.clicked.connect(self.edit_song)
 
     def add_song(self, song):
         self.songs.append(song)
@@ -29,8 +31,9 @@ class LyricalControl(QMainWindow, Ui_MainWindow):
         pass
 
     def edit_song(self):
-        #controller.song_list.getCurrentRow()
-        pass
+        song = self.songs[self.song_list.currentRow()]
+        self.editor = LyricalEditor(self.db, callbacks=None, song=song)
+        self.editor.show()
 
     def show_lyrics_list(self, lyrics):
         self.lyrics.clear()
