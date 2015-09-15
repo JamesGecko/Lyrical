@@ -13,19 +13,19 @@ from lyrical_projector import LyricalProjector
 from lyrical_control import LyricalControl
 
 def get_database():
-    #TODO: is multiple sqlite db handles the best way?
-    data_directory = os.path.expanduser('~/.lyrical')
-    try:
-        os.makedirs(data_directory)
-        db = Database(data_directory + '/songs.sqlite')
-        db.create_tables()
-    except OSError, e:
-        if e.errno != errno.EEXIST:
+    db_path = "{}/songs.sqlite".format(os.path.expanduser('~/.lyrical'))
+
+    if os.path.isfile(db_path):
+        db = Database(db_path)
+    else:
+        try:
+            db = Database(db_path)
+            db.create_tables()
+        except e:
             dialog = ModalDialog()
             dialog.error('Database init error {}: {}'.format(e.errno, e.strerror))
             raise
-    else:
-        return db
+    return db
 
 class ModalDialog(QWidget):
     def error(self, message):
