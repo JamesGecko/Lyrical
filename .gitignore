@@ -1,4 +1,5 @@
 lyrical/gui/ui_*.py
 *.pyc
 *.sqlite
+*.autosave
 /venv/*
